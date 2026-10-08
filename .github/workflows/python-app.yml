@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 1. Install uv and set up caching automatically
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      # 2. Set up Python using uv's managed Python versions
+      - name: Set up Python
+        run: uv python install
+
+      # 3. Install dependencies from uv.lock
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      # 4. Run your application tests or scripts
+    # - name: Run Tests
+     #   run: uv run pytest
